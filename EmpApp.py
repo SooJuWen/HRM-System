@@ -251,7 +251,7 @@ def GetEmpAtt():
 
 @app.route("/attend", methods=['GET'])
 def attendance():
-    select_sql = "SELECT * FROM employee"
+    select_sql = "SELECT e.emp_id, e.first_name, e.last_name, a.date_modified, a.status FROM employee e, attendance a WHERE e.emp_id = a.emp_id"
     cursor = db_conn.cursor()
     cursor.execute(select_sql)
     db_conn.commit()
@@ -262,8 +262,8 @@ def attendance():
         arr.append([])
         arr[col].append(str(result[col][1]) + " " + str(result[col][2]))
         arr[col].append(result[col][0])
-        arr[col].append(result[col][6])
-        arr[col].append(result[col][5])
+        arr[col].append(result[col][3])
+        arr[col].append(result[col][4])
 
     cursor.close()
  
@@ -279,7 +279,7 @@ def updateAttendance():
     emp_image_file = request.files['emp_image_file']
     attendance = request.form['attendance']
 
-    update_sql = "UPDATE employee SET status = %s, date = %s WHERE emp_id = %s"
+    update_sql = "UPDATE attendance SET status = %s, date = %s WHERE emp_id = %s"
     cursor = db_conn.cursor()
 
     if (attendance == "Present"):
@@ -333,7 +333,7 @@ def updateAttendance():
 def removeLeaveEvidence():
     emp_id = request.form.get('emp_id')
 
-    update_sql = "UPDATE employee SET status = %s, date = %s WHERE emp_id = %s"
+    update_sql = "UPDATE attendance SET status = %s, date = %s WHERE emp_id = %s"
     cursor = db_conn.cursor()
 
     today = date.today()
