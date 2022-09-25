@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Human Resource Management System</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        .column{
+            text-align: center;
+        }
+        button{
+            display: inline-block;
+            background-color: #007cb5;
+            color: white;
+            border: none;
+            width: 320px;
+            height: 60px;
+            border-radius: 5px;
+            font-size: larger;
+            margin: 10px;
+            padding: 10px;
+            transition: all 0.5s;
+        }
+
+        button span {
+            cursor: pointer;
+            display: inline-block;
+            position: relative;
+            transition: 0.5s;
+        }
+
+        button span:after {
+            content: '\00bb';
+            position: absolute;
+            opacity: 0;
+            top: 0;
+            right: -20px;
+            transition: 0.5s;
+        }
+
+        button:hover{
+            cursor: pointer;
+        }
+
+        button:hover span {
+            padding-right: 25px;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        button:hover span:after {
+            opacity: 1;
+            right: 0;
+        }
+
+    </style>
+</head>
+
+
+<body style="background-color: whitesmoke;">
+
+    <h1 style="color: #007cb5; text-align: center;">Human Resource Management Homepage</h1>
+
+    <form>
+        <div class="column" style="margin-top: 100px;">
+            
+                <button formaction="/addEmployee" formmethod="GET" type="submit"><span>Add Employee</span></button>
+            
+                <button type="submit"><span>Attendance Management</span></button>
+            
+        </div>
+        <div class="column">
+            
+                <button formaction="/payrollPage" formmethod="GET" type="submit"><span>Payroll Management</span></button>
+           
+                <button type="submits"><span>Performance Management</span></button>
+            
+        </div>
+
+
+    </form>
+
+</body>
+
+
+
+</html>
