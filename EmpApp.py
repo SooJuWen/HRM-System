@@ -50,6 +50,13 @@ def PayrollPage():
 def EditPayrollPage():
     return render_template('EditPayroll.html')
 
+@app.route("/changeEditPrf", methods=['GET'])
+def UpdatePerformancePage():
+    return render_template('UpdateEmpPrf.html')
+
+@app.route("/changeViewPrf", methods=['GET'])
+def ViewPerformancePage():
+    return render_template('ViewEmpPrf.html')
 
 @app.route("/addemp", methods=['POST'])
 def AddEmp():

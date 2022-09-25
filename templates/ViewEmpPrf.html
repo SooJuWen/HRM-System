@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Employee Performance List</title>
+
+        <style>
+            body {
+                background-color: whitesmoke;
+                margin-bottom: 20px;
+            }
+
+            button {
+                background-color: dodgerblue;
+                border: 1px solid transparent;
+                border-radius: 5px;
+                color: white;
+                height: 100%;
+                width: 100%;
+            }
+
+            button:hover {
+                background-color: white;
+                border: 1px solid dodgerblue;
+                border-radius: 5px;
+                color: dodgerblue
+            }
+
+            font {
+                color: black;
+                font-family: avenir;
+            }
+
+            h2 {
+                color: dodgerblue;
+            }
+
+            span {
+                display: table-cell;
+                height: 25px;
+                text-align: left;
+            }
+
+            table {
+                border-collapse: collapse;
+                margin-bottom: 15px;
+                margin-top: 15px;
+                width: 95%;
+            }
+
+            tr {
+                border: 2px solid grey;
+                background-color: white;
+            }
+
+            .buttonBar {
+                display: table;
+                table-layout: fixed;
+                width: 85%;
+            }
+            
+            .first {
+                background-color: dodgerblue;
+                border: 2px solid black;
+                color: white;
+            }
+
+            .gap {
+                width: 75%;
+            }
+            
+            .id {
+                width: 15%;
+            }
+
+            .list {
+                background-color: lightgrey;
+                border: 1px solid transparent;
+                border-radius: 15px;
+                width: 90%;
+            }
+
+            .no {
+                width: 5%;
+            }
+
+            .number {
+                width: 10%;
+            }
+        </style>
+
+        <script>
+            function createEmployeeList(tableData) {
+            var count = 0;
+            var tableBody = document.getElementById("contents");
+
+            tableData.forEach(function (rowData) {
+                var row = document.createElement('tr');
+
+                rowData.forEach(function (cellData) {
+                    var cell = document.createElement('td');
+                    cell.appendChild(document.createTextNode(cellData));
+                    row.appendChild(cell);
+                });
+
+                tableBody.appendChild(row);
+                count++;
+            });
+            document.getElementById("countEmp").innerHTML = "--- " + count.toString() + " employees ---";
+        }
+        </script>
+    </head>
+    
+    <center>
+        <font>
+            <h2>Employee Performance List</h2>
+            
+            <form>
+                <div class="buttonBar">
+                    <span><button formaction = "/homePage" formmethod = "Get" type = "submit">Home</button></span>
+                    <span class = "gap"></span>
+                    <span><button formation = "/changeEditPrf" formmethod = "GET" type = "submit">Edit Performance</button></span>
+                </div>
+            </form><br>
+
+            <body onload="createEmployeeList({{content}})">
+                <div class = "list">
+                    <table>
+                        <tr class = "first">
+                            <th class = "no">No.</th>
+                            <th class = "id">Emp ID</th>
+                            <th>Name</th>
+                            <th class = "number">In-Progress Project</th>
+                            <th class = "number">Completed Project</th>
+                            <th class = "number">Delayed Project</th>
+                            <th class = "number">Overdue Project</th>
+                            <th class = "number">Overall Performance (%)</th>
+                        </tr>
+                        
+                        <tbody id="contents">
+                            
+                        </tbody>
+                    </table>
+                </div>
+            
+                <p id="countEmp" style="text-align: center;"></p>
+            </body>
+        </font>
+    </center>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Edit Employee Performance</title>
+        
+        <style>
+            body {
+                background-color: whitesmoke;
+            }
+
+            button {
+                background-color: dodgerblue;
+                border: 1px solid transparent;
+                border-radius: 5px;
+                color: white;
+                height: 100%;
+                width: 100%;
+            }
+
+            button:hover {
+                background-color: white;
+                border: 1px solid dodgerblue;
+                border-radius: 5px;
+                color: dodgerblue
+            }
+
+            font {
+                color: black;
+                font-family: avenir;
+            }
+
+            h2 {
+                color: dodgerblue;
+            }
+
+            input {
+                color: grey;
+                font-size: 10pt;
+                height: 20px;
+                width: 100%;
+            }
+ 
+            span {
+                display: table-cell;
+                height: 25px;
+                text-align: left;
+            }
+
+            table {
+                border-collapse: collapse;
+                margin-bottom: 15px;
+                margin-top: 15px;
+                width: 95%;
+            }
+
+            .buttonBar {
+                display: table;
+                table-layout: fixed;
+                width: 85%;
+            }
+
+            .employee {
+                background-color: lightgrey;
+                border: 1px solid transparent;
+                border-radius: 15px;
+                height: 200px;
+                width: 750px;
+            }
+
+            .gap {
+                width: 5%;
+            }
+
+            .gap2 {
+                width: 75%;
+            }
+
+            .number {
+                width: 40%;
+            }
+
+            .performance {
+                background-color: lightgrey;
+                border: 1px solid transparent;
+                border-radius: 15px;
+                height: 200px;
+                width: 750px;
+            }
+
+            .title {
+                font-size: 18pt;
+                font-weight: bold;
+            }
+
+            .table {
+                display: table;
+                table-layout: fixed;
+                width: 80%;
+            }
+        </style>
+
+        <script>
+            function makeEditable(i1, i2, i3, i4) {
+                if (document.getElementById("btnSave").getAttribute("hidden")) {
+                    document.getElementById("btnEdit").innerText = "Cancel";
+                    document.getElementById(i1).disabled = false;
+                    document.getElementById(i2).disabled = false;
+                    document.getElementById(i3).disabled = false;
+                    document.getElementById(i4).disabled = false;
+                    document.getElementById("btnSave").removeAttribute("hidden");
+                } else {
+                    document.getElementById("btnEdit").innerText = "Edit";
+                    document.getElementById(i1).disabled = true;
+                    document.getElementById(i2).disabled = true;
+                    document.getElementById(i3).disabled = true;
+                    document.getElementById(i4).disabled = true;
+                    document.getElementById("btnSave").setAttribute("hidden", "hidden");
+                }
+            }
+
+            function calculatePerformance(prfForm) {
+                var completed = 0;
+                var overdue = 0;
+                var delayed = 0;
+
+                if (document.getElementById("iptCompleted").value.length != 0) {
+                    completed = parseFloat(document.getElementById("iptCompleted").value)
+                }
+                if (document.getElementById("iptOverdue").value.length != 0) {
+                    overdue = parseFloat(document.getElementById("iptOverdue").value)
+                }
+                if (document.getElementById("iptDelayed").value.length != 0) {
+                    delayed = parseFloat(document.getElementById("iptDelayed").value)
+                }
+
+                var performance = (((completed * 3) - ((overdue * 1) + (delayed * 2))) / (completed * 3) * 100);
+                document.getElementById("optPerformance").value = performance.toFixed(0);
+            }
+        </script>
+    </head>
+
+    <center>
+        <font>
+            <h2>Employee Performance Overview</h2>
+
+            <form>
+                <div class="buttonBar">
+                    <span><button formation = "/changeViewPrf" formmethod = "GET" type = "submit">Back</button></span>
+                    <span class = "gap2"></span>
+                    <span></span>
+                </div>
+            </form><br>
+
+            <body>
+                <form action="/performance" autocomplete="on" method = "POST" enctype="multipart/form-data">
+                    <div class = "employee">
+                        <p class = "title">Employee Info</p>
+    
+                        <div class = "table">
+                            <span>Employee ID:</span>
+                            <span class = "gap"></span>
+                            <span>First Name:</span>
+                            <span class = "gap"></span>
+                            <span>Last Name:</span>
+                        </div>
+    
+                        <div class = "table">
+                            <span><input type="number" name="emp_id" placeholder = "XXXX" value = "{{ id }}"></span>
+                            <span class = "gap"></span>
+                            <span><input type="text" name="first_name" placeholder = "Jay Sheng" value = "{{ fname }}" disabled></span>
+                            <span class = "gap"></span>
+                            <span><input type="text" name="last_name" placeholder = "Ho" value = "{{ lname }}" disabled></span>
+                        </div><br>
+    
+                        <div class = "table">
+                            <span></span>
+                            <span class = "gap"></span>
+                            <span><button formaction = "/getEmpName" formmethod = "GET" type = "submit">Check Employee</button></span>
+                            <span class = "gap"></span>
+                            <span></span>
+                        </div>
+                    </div><br><br>  
+
+                    <div class = "performance">
+                        <p class = "title">Performance</p>
+    
+                        <div class = "table">
+                            <span>In-Progress</span>
+                            <span class = "gap"></span>
+                            <span>Completed</span>
+                            <span class = "gap"></span>
+                            <span>Overdue</span>
+                            <span class = "gap"></span>
+                            <span>Delayed</span>
+                            <span class = "gap"></span>
+                            <span>Overall</span>
+                        </div>
+    
+                        <div class = "table">
+                            <span><input id = "iptInProgess" class = "number" type="number" onChange = "calculatePerformance()" name="prf_progressing" placeholder = "0" value = "{{ pgr }}" disabled></span>
+                            <span class = "gap"></span>
+                            <span><input id = "iptCompleted" class = "number" type="number" onChange = "calculatePerformance()" name="prf_completed" placeholder = "0" value = "{{ cmp }}"  disabled></span>
+                            <span class = "gap"></span>
+                            <span><input id = "iptOverdue" class = "number" type="number" onChange = "calculatePerformance()" name="prf_overdue" placeholder = "0" value = "{{ ovd }}"  disabled></span>
+                            <span class = "gap"></span>
+                            <span><input id = "iptDelayed" class = "number" type="number" onChange = "calculatePerformance()" name="prf_delayed" placeholder = "0" value = "{{ dly }}"  disabled></span>
+                            <span class = "gap"></span>
+                            <span><input id = "optPerformance" class = "number" type="number" name="prf_overall" placeholder = "0" value = "{{ prf }}"  disabled>%</span>
+                        </div><br>
+    
+                        <div class = "table">
+                            <span></span>
+                            <span class = "gap"></span>
+                            <span></span>
+                            <span class = "gap"></span>
+                            <span><button id = "btnEdit" type = "button" onclick = "makeEditable('iptInProgess', 'iptCompleted', 'iptOverdue', 'iptDelayed')">Edit</button></span>
+                            <span class = "gap"></span>
+                            <span></span>
+                            <span class = "gap"></span>
+                            <span><button id = "btnSave" type = "button" type = "submit" hidden>Save</button></span>
+                        </div>
+                    </div>
+                </form>
+            </body>
+        </font>
+    </center>
+</html>
