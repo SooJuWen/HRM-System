@@ -144,15 +144,17 @@
             <h2>Employee Performance Overview</h2>
 
             <form>
-                <div class="buttonBar">
-                    <span><button formation = "/changeViewPrf" formmethod = "GET" type = "submit">Back</button></span>
-                    <span class = "gap2"></span>
-                    <span></span>
-                </div>
+                <form action = "/getPerformanceList" method = "GET">
+                    <div class = "buttonBar">
+                        <span><button formation = "/changeViewPrf" formmethod = "GET" type = "submit">Back</button></span>
+                        <span class = "gap2"></span>
+                        <span></span>
+                    </div>
+                </form>
             </form><br>
 
             <body>
-                <form action="/performance" autocomplete="on" method = "POST" enctype="multipart/form-data">
+                <form action = "/performance" autocomplete = "on" method = "POST" enctype = "multipart/form-data">
                     <div class = "employee">
                         <p class = "title">Employee Info</p>
     
@@ -175,7 +177,7 @@
                         <div class = "table">
                             <span></span>
                             <span class = "gap"></span>
-                            <span><button formaction = "/getEmpName" formmethod = "GET" type = "submit">Check Employee</button></span>
+                            <span><button formmethod = "GET" type = "submit">Check Employee</button></span>
                             <span class = "gap"></span>
                             <span></span>
                         </div>

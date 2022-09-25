@@ -193,7 +193,6 @@ def UpdatePayroll():
 
     return render_template('EditPayroll.html')
 
-
 @app.route("/getPayrollList", methods=["GET"])
 def payrollList():
     select_sql = "SELECT employee.emp_id, employee.first_name, employee.last_name, payroll.salary, payroll.allowance, payroll.deduction, payroll.net_amount FROM employee, payroll WHERE employee.emp_id = payroll.emp_id"
@@ -220,6 +219,60 @@ def payrollList():
     cursor.close()
 
     return render_template("PayrollList.html", content=arr)
+
+@app.route("/performance", methods=["POST"])
+def UpdatePerformance():
+    emp_id = request.form['emp_id']
+    prf_progressing = int(request.form['prf_progressing'])
+    prf_completed = int(request.form['prf_completed'])
+    prf_overdue = int(request.form['prf_overdue'])
+    prf_delayed = int(request.form['prf_delayed'])
+    prf_overall = float(request.form['prf_overall'])
+
+    prf_overall = ((((prf_completed * 3) - ((prf_overdue * 1) + (prf_delayed * 2))) / (prf_completed * 3)) * 100)
+
+    progressing = prf_progressing
+    completed = prf_completed
+    overdue = prf_overdue
+    delayed = prf_delayed
+    overall = "{:.0f}".format(prf_overall)
+
+    update_sql = "UPDATE performance SET prf_progressing = " + progressing + ", prf_completed = " + completed + ", prf_overdue = " + overdue + ", prf_delayed" + delayed + ", prf_overall" + overall + " WHERE emp_id = " + emp_id
+
+    cursor = db_conn.cursor()
+    db_conn.commit()
+
+    if(emp_id != ""):
+        cursor.execute(update_sql)
+
+    cursor.close()
+
+    return render_template('UpdateEmpPrf.html')
+
+@app.route("/getPerformanceList", methods=["GET"])
+def performanceList():
+    select_sql = "SELECT employee.emp_id, employee.first_name, employee.last_name, performance.prf_progressing, performance.prf_completed, performance.prf_overdue, performance.prf_delayed, performance.prf_overall FROM employee, performance WHERE employee.emp_id = performance.emp_id"
+    cursor = db_conn.cursor()
+    cursor.execute(select_sql)
+    db_conn.commit()
+    result = cursor.fetchall()
+
+    arr = []
+    for col in range(len(result)):
+        arr.append([])
+        arr[col].append(col + 1)
+        arr[col].append(result[col][0])
+        arr[col].append(result[col][1] + result[col][2])
+        prf_progressing = result[col][3]
+        prf_completed = result[col][4]
+        prf_overdue = result[col][5]
+        prf_delayed = result[col][6]
+        prf_overall = result[col][7]
+        arr[col].append("{:.0f}".format(prf_overall))
+
+    cursor.close()
+
+    return render_template("ViewEmpPrf.html", content=arr)
 
 @app.route("/getEmpAtt", methods=['GET'])
 def GetEmpAtt():
