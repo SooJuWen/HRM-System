@@ -279,7 +279,7 @@ def updateAttendance():
     emp_image_file = request.files['emp_image_file']
     attendance = request.form['attendance']
 
-    update_sql = "UPDATE attendance SET status = %s, date = %s WHERE emp_id = %s"
+    update_sql = "UPDATE attendance SET status = %s, date_modified = %s WHERE emp_id = %s"
     cursor = db_conn.cursor()
 
     if (attendance == "Present"):
@@ -333,7 +333,7 @@ def updateAttendance():
 def removeLeaveEvidence():
     emp_id = request.form.get('emp_id')
 
-    update_sql = "UPDATE attendance SET status = %s, date = %s WHERE emp_id = %s"
+    update_sql = "UPDATE attendance SET status = %s, date_modified = %s WHERE emp_id = %s"
     cursor = db_conn.cursor()
 
     today = date.today()
