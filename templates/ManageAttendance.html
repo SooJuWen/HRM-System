@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Attendance Management</title>
+    <style>
+        h1 {
+            color: #007cb5;
+            text-align: center;
+        }
+
+        button {
+            color: #ffffff;
+            font-size: large;
+            background-color: #007cb5;
+            border: 2px solid transparent;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            color: #007cb5;
+            background-color: #ffffff;
+            font-weight: bold;
+            border: 2px solid #007cb5;
+        }
+
+        main {
+            display: block;
+            height: 80vh;
+            margin: 0;
+        }
+
+        .container {
+            display: block;
+            max-width: 1000px;
+            width: 80%;
+            background-color: rgb(225, 225, 225);
+            padding: 20px 40px;
+            border-radius: 12px;
+            margin: 0 auto;
+        }
+
+        .container .title {
+            font-size: 23px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .container div.innerForm .employee-details {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        div.innerForm .employee-details .input-box {
+            margin: 20px 0 12px 0;
+            width: calc(100% / 4 - 20px);
+        }
+
+        .employee-details .input-box .details {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .employee-details .input-box input {
+            height: 30px;
+            width: 80%;
+        }
+
+        .get {
+            margin-top: 10px;
+            border-radius: 5px;
+            width: 80%;
+            height: 35%;
+            text-align: center;
+            background-color: #007cb5;
+            border: none;
+            color: #FFFFFF;
+            padding: 5px;
+        }
+
+        .get:hover {
+            cursor: pointer;
+        }
+
+        button {
+            font-size: 15px;
+        }
+    </style>
+    <script>
+        function setVisible(id) {
+            if (id != null) {
+                document.getElementById("updateAttendance").style.visibility = "visible";
+                var lblStat = document.createElement('p');
+                
+
+                var status = {{stat}};
+
+                if (status == 1) {
+                    document.getElementById("att_present").checked = "true";
+                    var textNode = document.createTextNode("Present");
+                }
+                else if (status == 0) {
+                    document.getElementById("att_absent").checked = "true";
+                    var textNode = document.createTextNode("Absent");
+                } 
+                else if (status == -2) {
+                    // put the filename?
+                    var radList = document.getElementsByName('attendance');
+                    for (var i = 0; i < radList.length; i++) {
+                        if(radList[i].checked) radList[i].checked = false;
+                    }
+                    document.getElementById("att_present").disabled = true;
+                    document.getElementById("att_absent").disabled = true;
+                    document.getElementById("withFile").style.visibility = "hidden";
+                    document.getElementById("withoutFile").style.visibility = "visible";
+                    var textNode = document.createTextNode("On Leave");
+                }
+                else {
+                    var radList = document.getElementsByName('attendance');
+                    for (var i = 0; i < radList.length; i++) {
+                        if(radList[i].checked) radList[i].checked = false;
+                    }
+                    var textNode = document.createTextNode(" --- ");
+                }
+                lblStat.appendChild(textNode);
+                document.getElementById("status").appendChild(lblStat);
+            }
+        }
+    </script>
+</head>
+<body onload="setVisible({{id}})">
+    <h1>Attendance Management</h1>
+    <form action="/attend">
+        <button formaction="/attend" style="margin: 0px 0px 20px 25px">Back</button>
+    </form>
+    
+    <main>
+        <form action="/updateAtt" method="POST" autocomplete="on" enctype="multipart/form-data">
+            <div class="container">
+                <div class="title">Employee Info</div>
+                <div class="innerForm">
+                    <div class="employee-details">
+                        <div class="input-box">
+                            <span class="details">Employee ID</span>
+                            <input style="display: inline-flex" type="text" placeholder="ex:0000" value="{{ id }}"
+                                name="emp_id" />
+                            <button formaction="/getEmpAtt" formmethod="GET" class="get" type="submit">Get Employee</button>
+                        </div>
+                        <div class="input-box">
+                            <span class="details">First name</span>
+                            <input disabled type="text" value="{{ fname }}" name="last_name">
+                        </div>
+                        <div class="input-box">
+                            <span class="details">Last name</span>
+                            <input disabled type="text" placeholder="{{ lname }}" name="last_name">
+                        </div>
+                        <div class="input-box">
+                            <span class="details">Status</span>
+                            <b id="status"></b>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="container" id="updateAttendance" style="margin-top:20px; height: 180px; visibility: hidden">
+                <div class="title">Update Attendance</div>
+                <div>
+                    <span style="width: 40%; display: inline-block;">
+                        <b>On Leave Evidence</b><br/>
+                        <span id="withFile">
+                            Image: <input type=file name="emp_image_file" style="height:25px;font-size:12pt;color:grey;" accept="image/png, image/jpeg">
+                        </span>
+                        <span id="withoutFile" style="visibility: hidden">
+                            <p style="font-size:larger"> Item attached... </p>
+                            <button formaction="/removeLeave" style="width: 150px; background-color: red; color:white;">Remove</button>
+                        </span>
+                    </span>
+                    <span style="width: 40%; float: right">
+                        <p>Attendance of employee:</p>
+                        <input type="radio" id="att_present" name="attendance" value="Present">
+                        <label for="att_present">Present</label><br>
+                        <input type="radio" id="att_absent" name="attendance" value="Absent">
+                        <label for="att_absent">Absent</label>
+                        <div><button formaction="/updateAtt" style="margin-top: 10px; float:right; width: 100px">Save</button></div>
+                    </span>
+                </div>
+            </div>
+        </form>
+    </main>
+
+</body>
+</html>
