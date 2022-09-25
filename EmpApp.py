@@ -227,7 +227,7 @@ def GetEmpAtt():
 
     get_fn_sql = "SELECT first_name FROM employee WHERE emp_id= " + emp_id
     get_ln_sql = "SELECT last_name FROM employee WHERE emp_id= " + emp_id
-    get_stat_sql = "SELECT status FROM employee WHERE emp_id= " + emp_id
+    get_stat_sql = "SELECT status FROM attendance WHERE emp_id= " + emp_id
 
     cursor1 = db_conn.cursor()
     cursor2 = db_conn.cursor()
