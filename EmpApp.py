@@ -42,6 +42,10 @@ def HomePage():
 def AddEmployeePage():
     return render_template('AddEmp.html')
 
+@app.route("/manageEmployee", methods=['GET'])
+def ManageEmployeePage():
+    return render_template('ManageEmp.html')
+
 
 @app.route("/payrollPage", methods=['GET'])
 def PayrollPage():
