@@ -382,7 +382,6 @@ def CheckEmp():
     db_conn.commit()
     
     if emp_id != "":
-        
         cursor1.execute(get_fname_sql)
         cursor2.execute(get_lname_sql)
         cursor3.execute(get_pgr_sql)
