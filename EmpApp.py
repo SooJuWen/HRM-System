@@ -27,13 +27,13 @@ output = {}
 def home():
     return render_template('Home.html')
 
-@app.route("/about", methods=['POST'])
+@app.route("/aboutus", methods=['POST'])
 def about():
     return render_template('www.intellipaat.com')
 
 @app.route("/homePage", methods=['GET'])
 def HomePage():
-    return render_template('Home.html')
+    return render_template('AboutUs.html')
 
 
 @app.route("/addEmployee", methods=['GET'])
