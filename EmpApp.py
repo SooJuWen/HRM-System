@@ -514,8 +514,13 @@ def updateAttendance():
             except Exception as e:
                 return str(e)
 
-        cursor.execute(update_sql, (status, modified_time, emp_id))
-        db_conn.commit()
+            cursor.execute(update_sql, (status, modified_time, emp_id))
+            db_conn.commit()    
+        
+        else:
+            if (status == 0 or status == 1):
+                cursor.execute(update_sql, (status, modified_time, emp_id))
+                db_conn.commit() 
 
     finally:
         cursor.close()
@@ -540,17 +545,14 @@ def removeLeaveEvidence():
     db_conn.commit()
     cursor.close()
 
-    return render_template("ManageAttendance.html")
+    try:
+        emp_leave_evidence_in_s3 = "emp-id-" + str(emp_id) + "_leave_evidence"
+        s3 = boto3.resource('s3')
+        s3.Object(custombucket, emp_leave_evidence_in_s3).delete()
+    except Exception as e:
+            return str(e)
 
-    # try:
-    #     s3 = boto3.client(
-    #         "s3", aws_access_key_id=aws_key, aws_secret_access_key=aws_secret
-    #     )
-    #     s3.delete_object(Bucket=custombucket, Key=emp_leave_evidence_in_s3)
-    #     return True
-    # except Exception as ex:
-    #     print(str(ex))
-    #     return False
+    return render_template("ManageAttendance.html")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)
