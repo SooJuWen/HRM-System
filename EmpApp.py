@@ -55,6 +55,8 @@ def AddEmployee():
 
     insert_employee_sql = "INSERT INTO employee VALUES (%s, %s, %s, %s, %s)"
     insert_payroll_sql = "INSERT INTO payroll VALUES (%s, %s, %s, %s, %s)"
+    insert_attendance_sql = "INSERT INTO attendance VALUES (%s, %s, %s)"
+    insert_performance_sql = "INSERT INTO performance VALUES (%s, %s, %s, %s, %s, %s)"
 
     cursor = db_conn.cursor()
 
@@ -64,6 +66,8 @@ def AddEmployee():
     try:
         cursor.execute(insert_employee_sql, (emp_id, first_name, last_name, pri_skill, location))
         cursor.execute(insert_payroll_sql, (emp_id, 0, 0, 0, 0))
+        cursor.execute(insert_attendance_sql, (emp_id, -1, ' --- '))
+        cursor.execute(insert_performance_sql, (emp_id, 0, 0, 0, 0, 0.0))
         db_conn.commit()
         emp_name = "" + first_name + " " + last_name
         # Uplaod image file in S3 #
@@ -93,7 +97,7 @@ def AddEmployee():
         cursor.close()
 
     print("all modification done...")
-    return render_template('AddEmp.html', name=emp_name)
+    return render_template('AddEmp.html')
 
 @app.route("/retrieveEmp", methods=['GET'])
 def RetrieveEmployee():
