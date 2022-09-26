@@ -51,6 +51,10 @@ def ManageEmployeePage():
 def PayrollPage():
     return render_template('PayrollPage.html')
 
+@app.route("/employeePage", methods=['GET'])
+def EmployeePage():
+    return render_template('EmployeePage.html')
+
 
 @app.route("/changePage", methods=['GET'])
 def EditPayrollPage():
