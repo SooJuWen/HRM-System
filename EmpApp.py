@@ -517,7 +517,7 @@ def updateEmployee():
     pri_skill = request.form['pri_skill']
     location = request.form['location']
 
-    if (first_name != "" && last_name != "" && pri_skill != "" && location != "") {
+    if (first_name != "" and last_name != "" and pri_skill != "" and location != "") {
         update_sql = "UPDATE employee SET first_name = %s, last_name = %s, pri_skill = %s, location = %s WHERE emp_id = %s"
         cursor = db_conn.cursor()
 
