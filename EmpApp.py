@@ -293,7 +293,7 @@ def payrollList():
         arr.append([])
         arr[col].append(col + 1)
         arr[col].append(result[col][0])
-        arr[col].append(result[col][1] + result[col][2])
+        arr[col].append(result[col][1] + " " + result[col][2])
         salaryFloat = result[col][3]
         allowanceFloat = result[col][4]
         deductionFloat = result[col][5]
@@ -314,7 +314,6 @@ def UpdatePerformance():
     prf_completed = int(request.form['prf_completed'])
     prf_overdue = int(request.form['prf_overdue'])
     prf_delayed = int(request.form['prf_delayed'])
-    prf_overall = float(request.form['prf_overall'])
 
     prf_overall = ((((prf_completed * 3) - ((prf_overdue * 1) + (prf_delayed * 2))) / (prf_completed * 3)) * 100)
 
@@ -324,13 +323,13 @@ def UpdatePerformance():
     delayed = prf_delayed
     overall = "{:.0f}".format(prf_overall)
 
-    update_sql = "UPDATE performance SET prf_progressing = " + progressing + ", prf_completed = " + completed + ", prf_overdue = " + overdue + ", prf_delayed" + delayed + ", prf_overall" + overall + " WHERE emp_id = " + emp_id
+    update_prf_sql = "UPDATE performance SET prf_progressing = " + progressing + ", prf_completed = " + completed + ", prf_overdue = " + overdue + ", prf_delayed = " + delayed + ", prf_overall = " + overall + " WHERE emp_id = " + emp_id
 
     cursor = db_conn.cursor()
     db_conn.commit()
 
     if(emp_id != ""):
-        cursor.execute(update_sql)
+        cursor.execute(update_prf_sql)
 
     cursor.close()
 
