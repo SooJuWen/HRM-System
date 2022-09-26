@@ -530,12 +530,25 @@ def updateEmployee():
 def deleteEmployee():
     emp_id = request.form['emp_id']
 
-    delete_sql = "DELETE FROM employee LEFT JOIN attendance ON employee.emp_id = attendance.emp_id LEFT JOIN payroll ON employee.emp_id = payroll.emp_id LEFT JOIN performance ON employee.emp_id = performance.emp_id WHERE employee.emp_id=%s"
-    cursor = db_conn.cursor()
+    delete_sql_1 = "DELETE FROM employee WHERE emp_id=%s"
+    delete_sql_2 = "DELETE FROM attendance WHERE emp_id=%s"
+    delete_sql_3 = "DELETE FROM payroll WHERE emp_id=%s"
+    delete_sql_4 = "DELETE FROM performance WHERE emp_id=%s"
+    #delete_sql = "DELETE FROM employee LEFT JOIN attendance ON employee.emp_id = attendance.emp_id LEFT JOIN payroll ON employee.emp_id = payroll.emp_id LEFT JOIN performance ON employee.emp_id = performance.emp_id WHERE employee.emp_id=%s"
+    cursor1 = db_conn.cursor()
+    cursor2 = db_conn.cursor()
+    cursor3 = db_conn.cursor()
+    cursor4 = db_conn.cursor()
 
-    cursor.execute(delete_sql, (emp_id))
+    cursor1.execute(delete_sql, (emp_id))
+    cursor2.execute(delete_sql, (emp_id))
+    cursor3.execute(delete_sql, (emp_id))
+    cursor4.execute(delete_sql, (emp_id))
     db.conn.commit()
-    cursor.close()
+    cursor1.close()
+    cursor2.close()
+    cursor3.close()
+    cursor4.close()
 
     return render_template("ManageEmp.html")
 
