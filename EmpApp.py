@@ -171,10 +171,7 @@ def GetEmpName():
 
         else:
             return render_template('EditPayroll.html')
-
-    
-
-
+        
 @app.route("/payroll", methods=["POST"])
 def UpdatePayroll():
     emp_id = request.form['emp_id']
@@ -281,6 +278,60 @@ def performanceList():
     cursor.close()
 
     return render_template("ViewEmpPrf.html", content=arr)
+
+@app.route("/checkEmp", methods=['GET'])
+def CheckEmp():
+    emp_id = request.args['emp_id']
+    
+    get_fname_sql = "SELECT first_name FROM employee WHERE emp_id" + " = " + emp_id
+    get_lname_sql = "SELECT last_name FROM employee WHERE emp_id" + " = " + emp_id
+    get_pgr_sql = "SELECT prf_progressing FROM performance WHERE emp_id" + " = " + emp_id        
+    get_cmp_sql = "SELECT prf_completed FROM performance WHERE emp_id" + " = " + emp_id
+    get_ovd_sql = "SELECT prf_overdue FROM performance WHERE emp_id" + " = " + emp_id
+    get_dly_sql = "SELECT prf_delayed FROM performance WHERE emp_id" + " = " + emp_id
+    get_prf_sql = "SELECT prf_overall FROM performance WHERE emp_id" + " = " + emp_id
+    
+    cursor1 = db_conn.cursor()
+    cursor2 = db_conn.cursor()
+    cursor3 = db_conn.cursor()
+    cursor4 = db_conn.cursor()
+    cursor5 = db_conn.cursor()
+    cursor6 = db_conn.cursor()
+    cursor7 = db_conn.cursor()
+
+    db_conn.commit()
+    
+    if emp_id != "":
+        
+        cursor1.execute(get_fname_sql)
+        cursor2.execute(get_lname_sql)
+        cursor3.execute(get_pgr_sql)
+        cursor4.execute(get_cmp_sql)
+        cursor5.execute(get_ovd_sql)
+        cursor6.execute(get_dly_sql)
+        cursor7.execute(get_prf_sql)
+
+        if cursor1.rowcount != 0:
+            first_name = str(cursor1.fetchone()[0])
+            last_name = str(cursor2.fetchone()[0])
+            prf_progressing = int(cursor3.fetchone()[0])
+            prf_completed = int(cursor4.fetchone()[0])
+            prf_overdue = int(cursor5.fetchone()[0])
+            prf_delayed = int(cursor6.fetchone()[0])
+            prf_overall = "{:.0f}".format(float(cursor7.fetchone()[0]))
+            
+            cursor1.close()
+            cursor2.close()
+            cursor3.close()
+            cursor4.close()
+            cursor5.close()
+            cursor6.close()
+            cursor7.close()
+            
+            return render_template('UpdateEmpPrd.html', id = emp_id, fname = first_name, lname = last_name, prg = prf_progressing, cmp = prf_completed, ovd = prf_overdue, dly = prf_delayed, prf = prf_overall)
+            
+    else:
+            return render_template('UpdateEmpPrf.html')
 
 @app.route("/getEmpAtt", methods=['GET'])
 def GetEmpAtt():
