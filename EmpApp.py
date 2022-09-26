@@ -29,11 +29,11 @@ def home():
 
 @app.route("/aboutus", methods=['GET'])
 def about():
-    return render_template('www.intellipaat.com')
+    return render_template('AboutUs.html')
 
 @app.route("/homePage", methods=['GET'])
 def HomePage():
-    return render_template('AboutUs.html')
+    return render_template('Home.html')
 
 
 @app.route("/addEmployee", methods=['GET'])
