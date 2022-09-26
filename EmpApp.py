@@ -453,10 +453,10 @@ def retrieveEmployee():
             cursor3.close()
             cursor4.close()
 
-            return render_template('EditPayroll.html', id=emp_id, fname=first_name, lname=last_name, pskill=pri_skill, loc=location)
+            return render_template('ManageEmp.html', id=emp_id, fname=first_name, lname=last_name, pskill=pri_skill, loc=location)
 
         else:
-            return render_template('EditPayroll.html')
+            return render_template('ManageEmp.html')
 
 @app.route("/updateEmp", methods=['POST'])
 def updateEmployee():
