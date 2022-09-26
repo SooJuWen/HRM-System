@@ -471,7 +471,9 @@ def manageAttendance():
 def updateAttendance():
     emp_id = request.form.get('emp_id')
     emp_image_file = request.files['emp_image_file']
-    attendance = request.form['attendance']
+    attendance = " --- "
+    if request.files['emp_image_file'] != "":
+        attendance = request.form['attendance']
 
     update_sql = "UPDATE attendance SET status = %s, date_modified = %s WHERE emp_id = %s"
     cursor = db_conn.cursor()
