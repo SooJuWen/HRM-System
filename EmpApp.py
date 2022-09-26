@@ -350,12 +350,11 @@ def performanceList():
         arr[col].append(col + 1)
         arr[col].append(result[col][0])
         arr[col].append(result[col][1] + result[col][2])
-        prf_progressing = result[col][3]
-        prf_completed = result[col][4]
-        prf_overdue = result[col][5]
-        prf_delayed = result[col][6]
-        prf_overall = result[col][7]
-        arr[col].append("{:.0f}".format(prf_overall))
+        arr[col].append(result[col][3])
+        arr[col].append(result[col][4])
+        arr[col].append(result[col][5])
+        arr[col].append(result[col][6])
+        arr[col].append("{:.0f}".format(result[col][7]))
 
     cursor.close()
 
