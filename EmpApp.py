@@ -517,21 +517,20 @@ def updateEmployee():
     pri_skill = request.form['pri_skill']
     location = request.form['location']
 
-    if (first_name != "" and last_name != "" and pri_skill != "" and location != "") {
+    if (first_name != "" and last_name != "" and pri_skill != "" and location != ""):
         update_sql = "UPDATE employee SET first_name = %s, last_name = %s, pri_skill = %s, location = %s WHERE emp_id = %s"
         cursor = db_conn.cursor()
 
         cursor.execute(update_sql, (first_name, last_name, pri_skill, location, emp_id))
         db_conn.commit()
         cursor.close()
-    }
     return render_template("ManageEmp.html")
 
 @app.route("/deleteEmp", methods=['POST'])
 def deleteEmployee():
     emp_id = request.form['emp_id']
 
-    if (emp_id != "") {
+    if (emp_id != ""):
         delete_sql_1 = "DELETE FROM employee WHERE emp_id=%s"
         delete_sql_2 = "DELETE FROM attendance WHERE emp_id=%s"
         delete_sql_3 = "DELETE FROM payroll WHERE emp_id=%s"
@@ -551,7 +550,6 @@ def deleteEmployee():
         cursor2.close()
         cursor3.close()
         cursor4.close()
-    }
     return render_template("ManageEmp.html")
 
 if __name__ == '__main__':
