@@ -27,7 +27,7 @@ output = {}
 def home():
     return render_template('Home.html')
 
-@app.route("/aboutus", methods=['POST'])
+@app.route("/aboutus", methods=['GET'])
 def about():
     return render_template('www.intellipaat.com')
 
