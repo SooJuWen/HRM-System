@@ -27,11 +27,9 @@ output = {}
 def home():
     return render_template('Home.html')
 
-
 @app.route("/about", methods=['POST'])
 def about():
     return render_template('www.intellipaat.com')
-
 
 @app.route("/homePage", methods=['GET'])
 def HomePage():
@@ -46,30 +44,8 @@ def AddEmployeePage():
 def ManageEmployeePage():
     return render_template('ManageEmp.html')
 
-
-@app.route("/payrollPage", methods=['GET'])
-def PayrollPage():
-    return render_template('PayrollPage.html')
-
-@app.route("/employeePage", methods=['GET'])
-def EmployeePage():
-    return render_template('EmployeePage.html')
-
-
-@app.route("/changePage", methods=['GET'])
-def EditPayrollPage():
-    return render_template('EditPayroll.html')
-
-@app.route("/changeEditPrf", methods=['GET'])
-def UpdatePerformancePage():
-    return render_template('UpdateEmpPrf.html')
-
-@app.route("/changeViewPrf", methods=['GET'])
-def ViewPerformancePage():
-    return render_template('ViewEmpPrf.html')
-
-@app.route("/addemp", methods=['POST'])
-def AddEmp():
+@app.route("/addEmp", methods=['POST'])
+def AddEmployee():
     emp_id = request.form['emp_id']
     first_name = request.form['first_name']
     last_name = request.form['last_name']
@@ -119,6 +95,108 @@ def AddEmp():
     print("all modification done...")
     return render_template('AddEmp.html', name=emp_name)
 
+@app.route("/retrieveEmp", methods=['GET'])
+def RetrieveEmployee():
+    emp_id = request.args['emp_id']
+
+    get_fn_sql = "SELECT first_name FROM employee WHERE emp_id= " + emp_id
+    get_ln_sql = "SELECT last_name FROM employee WHERE emp_id= " + emp_id
+    get_ski_sql = "SELECT pri_skill FROM employee WHERE emp_id= " + emp_id
+    get_loc_sql = "SELECT location FROM employee WHERE emp_id= " + emp_id
+    
+    cursor1 = db_conn.cursor()
+    cursor2 = db_conn.cursor()
+    cursor3 = db_conn.cursor()
+    cursor4 = db_conn.cursor()
+
+    db_conn.commit()
+
+    if emp_id != "":
+        cursor1.execute(get_fn_sql)
+        cursor2.execute(get_ln_sql)
+        cursor3.execute(get_ski_sql)
+        cursor4.execute(get_loc_sql)
+
+        if cursor1.rowcount != 0:
+            first_name = str(cursor1.fetchone()[0])
+            last_name = str(cursor2.fetchone()[0])
+            pri_skill = str(cursor3.fetchone()[0])
+            location = str(cursor4.fetchone()[0])
+
+            cursor1.close()
+            cursor2.close()
+            cursor3.close()
+            cursor4.close()
+
+            return render_template('ManageEmp.html', id=emp_id, fname=first_name, lname=last_name, pskill=pri_skill, loc=location)
+
+        else:
+            return render_template('ManageEmp.html')
+
+@app.route("/updateEmp", methods=['POST'])
+def UpdateEmployee():
+    emp_id = request.form['emp_id']
+    first_name = request.form['first_name']
+    last_name = request.form['last_name']
+    pri_skill = request.form['pri_skill']
+    location = request.form['location']
+
+    if (first_name != "" and last_name != "" and pri_skill != "" and location != ""):
+        update_sql = "UPDATE employee SET first_name = %s, last_name = %s, pri_skill = %s, location = %s WHERE emp_id = %s"
+        cursor = db_conn.cursor()
+
+        cursor.execute(update_sql, (first_name, last_name, pri_skill, location, emp_id))
+        db_conn.commit()
+        cursor.close()
+    return render_template("ManageEmp.html")
+
+@app.route("/deleteEmp", methods=['POST'])
+def DeleteEmployee():
+    emp_id = request.form['emp_id']
+
+    if (emp_id != ""):
+        delete_sql_1 = "DELETE FROM employee WHERE emp_id=%s"
+        delete_sql_2 = "DELETE FROM attendance WHERE emp_id=%s"
+        delete_sql_3 = "DELETE FROM payroll WHERE emp_id=%s"
+        delete_sql_4 = "DELETE FROM performance WHERE emp_id=%s"
+        cursor1 = db_conn.cursor()
+        cursor2 = db_conn.cursor()
+        cursor3 = db_conn.cursor()
+        cursor4 = db_conn.cursor()
+
+        cursor1.execute(delete_sql_1, (emp_id))
+        cursor2.execute(delete_sql_2, (emp_id))
+        cursor3.execute(delete_sql_3, (emp_id))
+        cursor4.execute(delete_sql_4, (emp_id))
+
+        db_conn.commit()
+        cursor1.close()
+        cursor2.close()
+        cursor3.close()
+        cursor4.close()
+    return render_template("ManageEmp.html")
+
+
+
+@app.route("/payrollPage", methods=['GET'])
+def PayrollPage():
+    return render_template('PayrollPage.html')
+
+@app.route("/employeePage", methods=['GET'])
+def EmployeePage():
+    return render_template('EmployeePage.html')
+
+@app.route("/changePage", methods=['GET'])
+def EditPayrollPage():
+    return render_template('EditPayroll.html')
+
+@app.route("/changeEditPrf", methods=['GET'])
+def UpdatePerformancePage():
+    return render_template('UpdateEmpPrf.html')
+
+@app.route("/changeViewPrf", methods=['GET'])
+def ViewPerformancePage():
+    return render_template('ViewEmpPrf.html')
 
 @app.route("/getEmpName", methods=['GET'])
 def GetEmpName():
@@ -470,87 +548,6 @@ def removeLeaveEvidence():
     # except Exception as ex:
     #     print(str(ex))
     #     return False
-
-@app.route("/retrieveEmp", methods=['GET'])
-def retrieveEmployee():
-    emp_id = request.args['emp_id']
-
-    get_fn_sql = "SELECT first_name FROM employee WHERE emp_id= " + emp_id
-    get_ln_sql = "SELECT last_name FROM employee WHERE emp_id= " + emp_id
-    get_ski_sql = "SELECT pri_skill FROM employee WHERE emp_id= " + emp_id
-    get_loc_sql = "SELECT location FROM employee WHERE emp_id= " + emp_id
-    
-    cursor1 = db_conn.cursor()
-    cursor2 = db_conn.cursor()
-    cursor3 = db_conn.cursor()
-    cursor4 = db_conn.cursor()
-
-    db_conn.commit()
-
-    if emp_id != "":
-        cursor1.execute(get_fn_sql)
-        cursor2.execute(get_ln_sql)
-        cursor3.execute(get_ski_sql)
-        cursor4.execute(get_loc_sql)
-
-        if cursor1.rowcount != 0:
-            first_name = str(cursor1.fetchone()[0])
-            last_name = str(cursor2.fetchone()[0])
-            pri_skill = str(cursor3.fetchone()[0])
-            location = str(cursor4.fetchone()[0])
-
-            cursor1.close()
-            cursor2.close()
-            cursor3.close()
-            cursor4.close()
-
-            return render_template('ManageEmp.html', id=emp_id, fname=first_name, lname=last_name, pskill=pri_skill, loc=location)
-
-        else:
-            return render_template('ManageEmp.html')
-
-@app.route("/updateEmp", methods=['POST'])
-def updateEmployee():
-    emp_id = request.form['emp_id']
-    first_name = request.form['first_name']
-    last_name = request.form['last_name']
-    pri_skill = request.form['pri_skill']
-    location = request.form['location']
-
-    if (first_name != "" and last_name != "" and pri_skill != "" and location != ""):
-        update_sql = "UPDATE employee SET first_name = %s, last_name = %s, pri_skill = %s, location = %s WHERE emp_id = %s"
-        cursor = db_conn.cursor()
-
-        cursor.execute(update_sql, (first_name, last_name, pri_skill, location, emp_id))
-        db_conn.commit()
-        cursor.close()
-    return render_template("ManageEmp.html")
-
-@app.route("/deleteEmp", methods=['POST'])
-def deleteEmployee():
-    emp_id = request.form['emp_id']
-
-    if (emp_id != ""):
-        delete_sql_1 = "DELETE FROM employee WHERE emp_id=%s"
-        delete_sql_2 = "DELETE FROM attendance WHERE emp_id=%s"
-        delete_sql_3 = "DELETE FROM payroll WHERE emp_id=%s"
-        delete_sql_4 = "DELETE FROM performance WHERE emp_id=%s"
-        cursor1 = db_conn.cursor()
-        cursor2 = db_conn.cursor()
-        cursor3 = db_conn.cursor()
-        cursor4 = db_conn.cursor()
-
-        cursor1.execute(delete_sql_1, (emp_id))
-        cursor2.execute(delete_sql_2, (emp_id))
-        cursor3.execute(delete_sql_3, (emp_id))
-        cursor4.execute(delete_sql_4, (emp_id))
-
-        db_conn.commit()
-        cursor1.close()
-        cursor2.close()
-        cursor3.close()
-        cursor4.close()
-    return render_template("ManageEmp.html")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)

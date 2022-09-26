@@ -40,9 +40,7 @@
 
 		<body background-color="whitesmoke">
 
-			<form action="/addemp" autocomplete="on" method = "POST" enctype="multipart/form-data">
-
-				<!-- <button type="submit" formaction="/getemp" style="background: grey; height: 45px; width: 200px; color:white; font:oblique;">GET EMPLOYEE INFORMATION</button><br><br> -->
+			<form action="/addEmp" autocomplete="on" method = "POST" enctype="multipart/form-data">
 
 		  		Employee ID:<br> <input style="height:25px;font-size:14pt; color:grey;" type="number" name="emp_id" autofocus size="40"><br><br>
 
@@ -57,10 +55,9 @@
 		  		Image: <input type=file name="emp_image_file" style="height:20px;font-size:10pt;color:grey;"> <br><br>
 
 				  <button formaction="/homePage" formmethod="GET" class="homeButton" type="submit">HOMEPAGE</button>
-		  		<button type="submit">UPDATE DATABASE</button>
+		  		<button formaction="/addEmp" formmethod="POST" type="submit">UPDATE DATABASE</button>
 
 			</form>
-<!-- <a href="/about">About Us</a> -->
 		</body>
 
 	</font>
