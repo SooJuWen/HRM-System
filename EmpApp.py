@@ -410,7 +410,7 @@ def CheckEmp():
             cursor6.close()
             cursor7.close()
             
-            return render_template('UpdateEmpPrd.html', id = emp_id, fname = first_name, lname = last_name, prg = prf_progressing, cmp = prf_completed, ovd = prf_overdue, dly = prf_delayed, prf = prf_overall)
+            return render_template('UpdateEmpPrf.html', id = emp_id, fname = first_name, lname = last_name, prg = prf_progressing, cmp = prf_completed, ovd = prf_overdue, dly = prf_delayed, prf = prf_overall)
             
     else:
             return render_template('UpdateEmpPrf.html')
