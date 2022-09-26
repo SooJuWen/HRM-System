@@ -541,6 +541,13 @@ def removeLeaveEvidence():
     db_conn.commit()
     cursor.close()
 
+    try:
+        emp_leave_evidence_in_s3 = "emp-id-" + str(emp_id) + "_leave_evidence"
+        s3 = boto3.resource('s3')
+        s3.Object(custombucket, emp_leave_evidence_in_s3).delete()
+    except Exception as e:
+            return str(e)
+
     return render_template("ManageAttendance.html")
 
     # try:
