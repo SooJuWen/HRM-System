@@ -424,10 +424,10 @@ def removeLeaveEvidence():
 def retrieveEmployee():
     emp_id = request.args['emp_id']
 
-    get_fn_sql = "SELECT first_name FROM employee WHERE emp_id" + " = " + emp_id
-    get_ln_sql = "SELECT last_name FROM employee WHERE emp_id" + " = " + emp_id
-    get_ski_sql = "SELECT pri_skill FROM employee WHERE emp_id" + " = " + emp_id
-    get_loc_sql = "SELECT location FROM employee WHERE emp_id" + " = " + emp_id
+    get_fn_sql = "SELECT first_name FROM employee WHERE emp_id= " + emp_id
+    get_ln_sql = "SELECT last_name FROM employee WHERE emp_id= " + emp_id
+    get_ski_sql = "SELECT pri_skill FROM employee WHERE emp_id= " + emp_id
+    get_loc_sql = "SELECT location FROM employee WHERE emp_id= " + emp_id
     
     cursor1 = db_conn.cursor()
     cursor2 = db_conn.cursor()
