@@ -477,12 +477,12 @@ def updateEmployee():
 
 @app.route("/deleteEmp", methods=['POST'])
 def deleteEmployee():
-    emp_id = '3333'
+    emp_id = request.form['emp_id']
 
-    delete_sql = "DELETE FROM employee e, attendance a, payroll pay, performance per WHERE e.emp_id='3333' AND a.emp_id='3333' AND pay.emp_id='3333' AND per.emp_id='3333'"
+    delete_sql = "DELETE FROM employee e INNER JOIN attendance a INNER JOIN payroll pay INNER JOIN performance per WHERE e.emp_id=a.emp_id AND a.emp_id=pay.emp_id AND pay.emp_id=per.emp_id AND e.emp_id=%s"
     cursor = db_conn.cursor()
 
-    cursor.execute(delete_sql)
+    cursor.execute(delete_sql, (emp_id))
     db.conn.commit()
     cursor.close()
 
