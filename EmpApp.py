@@ -479,10 +479,10 @@ def updateEmployee():
 def deleteEmployee():
     emp_id = request.form['emp_id']
 
-    delete_sql = "DELETE FROM employee e, attendance a, payroll pay, performance per WHERE emp_id=%s, e.emp_id=a.emp_id, a.emp_id=pay.emp_id, pay.emp_id=per.emp_id"
+    delete_sql = "DELETE FROM employee e, attendance a, payroll pay, performance per WHERE e.emp_id=%s, a.emp_id=%s, pay.emp_id=%s, per.emp_id=%s"
     cursor = db_conn.cursor()
 
-    cursor.execute(delete_sql, (emp_id))
+    cursor.execute(delete_sql, (emp_id, emp_id, emp_id, emp_id))
     db.conn.commit()
     cursor.close()
 
