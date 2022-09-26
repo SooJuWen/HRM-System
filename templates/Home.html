@@ -76,8 +76,10 @@
         <div class="column">
             
                 <button formaction="/payrollPage" formmethod="GET" type="submit"><span>Payroll Management</span></button>
-           
-                <button formaction="/changeViewPrf" formmethod="GET" type="submits"><span>Performance Management</span></button>
+                
+                <form action="/getPerformanceList" method="GET">
+                    <button formaction="/changeViewPrf" formmethod="GET" type="submits"><span>Performance Management</span></button>
+                </form>
             
         </div>
 
