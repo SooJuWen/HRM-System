@@ -544,7 +544,7 @@ def deleteEmployee():
     cursor2.execute(delete_sql_2, (emp_id))
     cursor3.execute(delete_sql_3, (emp_id))
     cursor4.execute(delete_sql_4, (emp_id))
-    db.conn.commit()
+    db_conn.commit()
     cursor1.close()
     cursor2.close()
     cursor3.close()
