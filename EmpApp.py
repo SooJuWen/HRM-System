@@ -317,10 +317,10 @@ def UpdatePerformance():
 
     prf_overall = ((((prf_completed * 3) - ((prf_overdue * 1) + (prf_delayed * 2))) / (prf_completed * 3)) * 100)
 
-    progressing = prf_progressing
-    completed = prf_completed
-    overdue = prf_overdue
-    delayed = prf_delayed
+    progressing = str(prf_progressing)
+    completed = str(prf_completed)
+    overdue = str(prf_overdue)
+    delayed = str(prf_delayed)
     overall = "{:.0f}".format(prf_overall)
 
     update_prf_sql = "UPDATE performance SET prf_progressing = " + progressing + ", prf_completed = " + completed + ", prf_overdue = " + overdue + ", prf_delayed = " + delayed + ", prf_overall = " + overall + " WHERE emp_id = " + emp_id
