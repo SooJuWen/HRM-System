@@ -31,6 +31,10 @@ def home():
 def about():
     return render_template('AboutUs.html')
 
+@app.route("/aboutBack", methods=['GET'])
+def about():
+    return render_template('Home.html')
+
 @app.route("/homePage", methods=['GET'])
 def HomePage():
     return render_template('Home.html')
