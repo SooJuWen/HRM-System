@@ -180,7 +180,32 @@ def DeleteEmployee():
         cursor4.close()
     return render_template("ManageEmp.html")
 
+@app.route("/removeLeave", methods=['POST'])
+def removeLeaveEvidence():
+    emp_id = request.form.get('emp_id')
 
+    update_sql = "UPDATE attendance SET status = %s, date_modified = %s WHERE emp_id = %s"
+    cursor = db_conn.cursor()
+
+    today = date.today()
+    now = datetime.now()
+    # dd/mm/YY
+    d = today.strftime("%d/%m/%Y")
+    t = now.strftime("%H:%M:%S")
+    modified_time = t + ", " + d
+
+    cursor.execute(update_sql, ("-1", modified_time, emp_id))
+    db_conn.commit()
+    cursor.close()
+
+    try:
+        emp_leave_evidence_in_s3 = "emp-id-" + str(emp_id) + "_leave_evidence"
+        s3 = boto3.resource('s3')
+        s3.Object(custombucket, emp_leave_evidence_in_s3).delete()
+    except Exception as e:
+            return str(e)
+
+    return render_template("ManageAttendance.html")
 
 @app.route("/payrollPage", methods=['GET'])
 def PayrollPage():
@@ -307,111 +332,6 @@ def payrollList():
 
     return render_template("PayrollList.html", content=arr)
 
-@app.route("/performance", methods=["POST"])
-def UpdatePerformance():
-    emp_id = request.form['emp_id']
-    prf_progressing = int(request.form['prf_progressing'])
-    prf_completed = int(request.form['prf_completed'])
-    prf_overdue = int(request.form['prf_overdue'])
-    prf_delayed = int(request.form['prf_delayed'])
-
-    prf_overall = ((((prf_completed * 3) - ((prf_overdue * 1) + (prf_delayed * 2))) / (prf_completed * 3)) * 100)
-
-    progressing = str(prf_progressing)
-    completed = str(prf_completed)
-    overdue = str(prf_overdue)
-    delayed = str(prf_delayed)
-    overall = "{:.0f}".format(prf_overall)
-
-    update_prf_sql = "UPDATE performance SET prf_progressing = " + progressing + ", prf_completed = " + completed + ", prf_overdue = " + overdue + ", prf_delayed = " + delayed + ", prf_overall = " + overall + " WHERE emp_id = " + emp_id
-
-    cursor = db_conn.cursor()
-    db_conn.commit()
-
-    if(emp_id != ""):
-        cursor.execute(update_prf_sql)
-
-    cursor.close()
-
-    return render_template('UpdateEmpPrf.html')
-
-@app.route("/getPerformanceList", methods=["GET"])
-def performanceList():
-    select_sql = "SELECT employee.emp_id, employee.first_name, employee.last_name, performance.prf_progressing, performance.prf_completed, performance.prf_overdue, performance.prf_delayed, performance.prf_overall FROM employee, performance WHERE employee.emp_id = performance.emp_id"
-    cursor = db_conn.cursor()
-    cursor.execute(select_sql)
-    db_conn.commit()
-    result = cursor.fetchall()
-
-    arr = []
-    for col in range(len(result)):
-        arr.append([])
-        arr[col].append(col + 1)
-        arr[col].append(result[col][0])
-        arr[col].append(result[col][1] + " " + result[col][2])
-        arr[col].append(result[col][3])
-        arr[col].append(result[col][4])
-        arr[col].append(result[col][5])
-        arr[col].append(result[col][6])
-        arr[col].append("{:.0f}".format(result[col][7]) + " %")
-
-    cursor.close()
-
-    return render_template("ViewEmpPrf.html", content=arr)
-
-@app.route("/checkEmp", methods=['GET'])
-def CheckEmp():
-    emp_id = request.args['emp_id']
-    
-    get_fname_sql = "SELECT first_name FROM employee WHERE emp_id" + " = " + emp_id
-    get_lname_sql = "SELECT last_name FROM employee WHERE emp_id" + " = " + emp_id
-    get_pgr_sql = "SELECT prf_progressing FROM performance WHERE emp_id" + " = " + emp_id        
-    get_cmp_sql = "SELECT prf_completed FROM performance WHERE emp_id" + " = " + emp_id
-    get_ovd_sql = "SELECT prf_overdue FROM performance WHERE emp_id" + " = " + emp_id
-    get_dly_sql = "SELECT prf_delayed FROM performance WHERE emp_id" + " = " + emp_id
-    get_prf_sql = "SELECT prf_overall FROM performance WHERE emp_id" + " = " + emp_id
-    
-    cursor1 = db_conn.cursor()
-    cursor2 = db_conn.cursor()
-    cursor3 = db_conn.cursor()
-    cursor4 = db_conn.cursor()
-    cursor5 = db_conn.cursor()
-    cursor6 = db_conn.cursor()
-    cursor7 = db_conn.cursor()
-
-    db_conn.commit()
-    
-    if emp_id != "":
-        cursor1.execute(get_fname_sql)
-        cursor2.execute(get_lname_sql)
-        cursor3.execute(get_pgr_sql)
-        cursor4.execute(get_cmp_sql)
-        cursor5.execute(get_ovd_sql)
-        cursor6.execute(get_dly_sql)
-        cursor7.execute(get_prf_sql)
-
-        if cursor1.rowcount != 0:
-            first_name = str(cursor1.fetchone()[0])
-            last_name = str(cursor2.fetchone()[0])
-            prf_progressing = int(cursor3.fetchone()[0])
-            prf_completed = int(cursor4.fetchone()[0])
-            prf_overdue = int(cursor5.fetchone()[0])
-            prf_delayed = int(cursor6.fetchone()[0])
-            prf_overall = "{:.0f}".format(float(cursor7.fetchone()[0]))
-            
-            cursor1.close()
-            cursor2.close()
-            cursor3.close()
-            cursor4.close()
-            cursor5.close()
-            cursor6.close()
-            cursor7.close()
-            
-            return render_template('UpdateEmpPrf.html', id = emp_id, fname = first_name, lname = last_name, pgr = prf_progressing, cmp = prf_completed, ovd = prf_overdue, dly = prf_delayed, prf = prf_overall)
-            
-    else:
-            return render_template('UpdateEmpPrf.html')
-
 @app.route("/getEmpAtt", methods=['GET'])
 def GetEmpAtt():
     emp_id = request.args['emp_id']
@@ -525,32 +445,110 @@ def updateAttendance():
 
     return render_template("ManageAttendance.html")
 
-@app.route("/removeLeave", methods=['POST'])
-def removeLeaveEvidence():
-    emp_id = request.form.get('emp_id')
+@app.route("/performance", methods=["POST"])
+def UpdatePerformance():
+    emp_id = request.form['emp_id']
+    prf_progressing = int(request.form['prf_progressing'])
+    prf_completed = int(request.form['prf_completed'])
+    prf_overdue = int(request.form['prf_overdue'])
+    prf_delayed = int(request.form['prf_delayed'])
 
-    update_sql = "UPDATE attendance SET status = %s, date_modified = %s WHERE emp_id = %s"
+    prf_overall = ((((prf_completed * 3) - ((prf_overdue * 1) + (prf_delayed * 2))) / (prf_completed * 3)) * 100)
+
+    progressing = str(prf_progressing)
+    completed = str(prf_completed)
+    overdue = str(prf_overdue)
+    delayed = str(prf_delayed)
+    overall = "{:.0f}".format(prf_overall)
+
+    update_prf_sql = "UPDATE performance SET prf_progressing = " + progressing + ", prf_completed = " + completed + ", prf_overdue = " + overdue + ", prf_delayed = " + delayed + ", prf_overall = " + overall + " WHERE emp_id = " + emp_id
+
     cursor = db_conn.cursor()
-
-    today = date.today()
-    now = datetime.now()
-    # dd/mm/YY
-    d = today.strftime("%d/%m/%Y")
-    t = now.strftime("%H:%M:%S")
-    modified_time = t + ", " + d
-
-    cursor.execute(update_sql, ("-1", modified_time, emp_id))
     db_conn.commit()
+
+    if(emp_id != ""):
+        cursor.execute(update_prf_sql)
+
     cursor.close()
 
-    try:
-        emp_leave_evidence_in_s3 = "emp-id-" + str(emp_id) + "_leave_evidence"
-        s3 = boto3.resource('s3')
-        s3.Object(custombucket, emp_leave_evidence_in_s3).delete()
-    except Exception as e:
-            return str(e)
+    return render_template('UpdateEmpPrf.html')
 
-    return render_template("ManageAttendance.html")
+@app.route("/getPerformanceList", methods=["GET"])
+def performanceList():
+    select_sql = "SELECT employee.emp_id, employee.first_name, employee.last_name, performance.prf_progressing, performance.prf_completed, performance.prf_overdue, performance.prf_delayed, performance.prf_overall FROM employee, performance WHERE employee.emp_id = performance.emp_id"
+    cursor = db_conn.cursor()
+    cursor.execute(select_sql)
+    db_conn.commit()
+    result = cursor.fetchall()
+
+    arr = []
+    for col in range(len(result)):
+        arr.append([])
+        arr[col].append(col + 1)
+        arr[col].append(result[col][0])
+        arr[col].append(result[col][1] + " " + result[col][2])
+        arr[col].append(result[col][3])
+        arr[col].append(result[col][4])
+        arr[col].append(result[col][5])
+        arr[col].append(result[col][6])
+        arr[col].append("{:.0f}".format(result[col][7]) + " %")
+
+    cursor.close()
+
+    return render_template("ViewEmpPrf.html", content=arr)
+
+@app.route("/checkEmp", methods=['GET'])
+def CheckEmp():
+    emp_id = request.args['emp_id']
+    
+    get_fname_sql = "SELECT first_name FROM employee WHERE emp_id" + " = " + emp_id
+    get_lname_sql = "SELECT last_name FROM employee WHERE emp_id" + " = " + emp_id
+    get_pgr_sql = "SELECT prf_progressing FROM performance WHERE emp_id" + " = " + emp_id        
+    get_cmp_sql = "SELECT prf_completed FROM performance WHERE emp_id" + " = " + emp_id
+    get_ovd_sql = "SELECT prf_overdue FROM performance WHERE emp_id" + " = " + emp_id
+    get_dly_sql = "SELECT prf_delayed FROM performance WHERE emp_id" + " = " + emp_id
+    get_prf_sql = "SELECT prf_overall FROM performance WHERE emp_id" + " = " + emp_id
+    
+    cursor1 = db_conn.cursor()
+    cursor2 = db_conn.cursor()
+    cursor3 = db_conn.cursor()
+    cursor4 = db_conn.cursor()
+    cursor5 = db_conn.cursor()
+    cursor6 = db_conn.cursor()
+    cursor7 = db_conn.cursor()
+
+    db_conn.commit()
+    
+    if emp_id != "":
+        cursor1.execute(get_fname_sql)
+        cursor2.execute(get_lname_sql)
+        cursor3.execute(get_pgr_sql)
+        cursor4.execute(get_cmp_sql)
+        cursor5.execute(get_ovd_sql)
+        cursor6.execute(get_dly_sql)
+        cursor7.execute(get_prf_sql)
+
+        if cursor1.rowcount != 0:
+            first_name = str(cursor1.fetchone()[0])
+            last_name = str(cursor2.fetchone()[0])
+            prf_progressing = int(cursor3.fetchone()[0])
+            prf_completed = int(cursor4.fetchone()[0])
+            prf_overdue = int(cursor5.fetchone()[0])
+            prf_delayed = int(cursor6.fetchone()[0])
+            prf_overall = "{:.0f}".format(float(cursor7.fetchone()[0]))
+            
+            cursor1.close()
+            cursor2.close()
+            cursor3.close()
+            cursor4.close()
+            cursor5.close()
+            cursor6.close()
+            cursor7.close()
+            
+            return render_template('UpdateEmpPrf.html', id = emp_id, fname = first_name, lname = last_name, pgr = prf_progressing, cmp = prf_completed, ovd = prf_overdue, dly = prf_delayed, prf = prf_overall)
+            
+    else:
+            return render_template('UpdateEmpPrf.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)
