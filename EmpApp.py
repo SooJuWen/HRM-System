@@ -180,33 +180,6 @@ def DeleteEmployee():
         cursor4.close()
     return render_template("ManageEmp.html")
 
-@app.route("/removeLeave", methods=['POST'])
-def removeLeaveEvidence():
-    emp_id = request.form.get('emp_id')
-
-    update_sql = "UPDATE attendance SET status = %s, date_modified = %s WHERE emp_id = %s"
-    cursor = db_conn.cursor()
-
-    today = date.today()
-    now = datetime.now()
-    # dd/mm/YY
-    d = today.strftime("%d/%m/%Y")
-    t = now.strftime("%H:%M:%S")
-    modified_time = t + ", " + d
-
-    cursor.execute(update_sql, ("-1", modified_time, emp_id))
-    db_conn.commit()
-    cursor.close()
-
-    try:
-        emp_leave_evidence_in_s3 = "emp-id-" + str(emp_id) + "_leave_evidence"
-        s3 = boto3.resource('s3')
-        s3.Object(custombucket, emp_leave_evidence_in_s3).delete()
-    except Exception as e:
-            return str(e)
-
-    return render_template("ManageAttendance.html")
-
 @app.route("/payrollPage", methods=['GET'])
 def PayrollPage():
     return render_template('PayrollPage.html')
@@ -443,6 +416,33 @@ def updateAttendance():
 
     finally:
         cursor.close()
+
+    return render_template("ManageAttendance.html")
+
+@app.route("/removeLeave", methods=['POST'])
+def removeLeaveEvidence():
+    emp_id = request.form.get('emp_id')
+
+    update_sql = "UPDATE attendance SET status = %s, date_modified = %s WHERE emp_id = %s"
+    cursor = db_conn.cursor()
+
+    today = date.today()
+    now = datetime.now()
+    # dd/mm/YY
+    d = today.strftime("%d/%m/%Y")
+    t = now.strftime("%H:%M:%S")
+    modified_time = t + ", " + d
+
+    cursor.execute(update_sql, ("-1", modified_time, emp_id))
+    db_conn.commit()
+    cursor.close()
+
+    try:
+        emp_leave_evidence_in_s3 = "emp-id-" + str(emp_id) + "_leave_evidence"
+        s3 = boto3.resource('s3')
+        s3.Object(custombucket, emp_leave_evidence_in_s3).delete()
+    except Exception as e:
+            return str(e)
 
     return render_template("ManageAttendance.html")
 
