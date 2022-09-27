@@ -32,7 +32,7 @@ def about():
     return render_template('AboutUs.html')
 
 @app.route("/aboutBack", methods=['GET'])
-def about():
+def aboutBack():
     return render_template('Home.html')
 
 @app.route("/homePage", methods=['GET'])
