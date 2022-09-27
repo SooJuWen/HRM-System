@@ -177,6 +177,14 @@ def DeleteEmployee():
         cursor2.close()
         cursor3.close()
         cursor4.close()
+
+        try:
+            emp_image_file_name_in_s3 = "emp-id-" + str(emp_id) + "_image_file"
+            s3 = boto3.resource('s3')
+            s3.Object(custombucket, emp_image_file_name_in_s3).delete()
+        except Exception as e:
+            return str(e)
+
     return render_template("ManageEmp.html")
 
 @app.route("/payrollPage", methods=['GET'])
@@ -441,7 +449,7 @@ def removeLeaveEvidence():
         s3 = boto3.resource('s3')
         s3.Object(custombucket, emp_leave_evidence_in_s3).delete()
     except Exception as e:
-            return str(e)
+        return str(e)
 
     return render_template("ManageAttendance.html")
 
