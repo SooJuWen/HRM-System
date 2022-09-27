@@ -477,6 +477,8 @@ def updateAttendance():
         status = 1
     elif (attendance == "Absent"):
         status = 0
+    elif (attendance == "Apply Leave"):
+        status = -2
     else:
         status = -1
 
@@ -489,10 +491,9 @@ def updateAttendance():
 
     try:
 
-        if (emp_image_file.filename != ""):
+        if (emp_image_file.filename != "" and status == -2):
             emp_leave_evidence_in_s3 = "emp-id-" + str(emp_id) + "_leave_evidence"
             s3 = boto3.resource('s3')
-            status = -2
 
             try:
                 s3.Bucket(custombucket).put_object(Key=emp_leave_evidence_in_s3, Body=emp_image_file)
