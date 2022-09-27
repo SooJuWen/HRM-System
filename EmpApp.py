@@ -477,7 +477,7 @@ def updateAttendance():
         status = 1
     elif (attendance == "Absent"):
         status = 0
-    elif (attendance == "Apply Leave"):
+    elif (attendance == "Leave"):
         status = -2
     else:
         status = -1
